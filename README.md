@@ -300,13 +300,18 @@ Special thanks to the [Bi-BlipCIR](https://github.com/Cuberick-Orion/Bi-Blip4CIR
 We use the code to evaluate the performance of our proposed method. 
 If you find this code useful for your research, please consider citing the original paper:
 ```bibtex
-@misc{wu2024-weimocir,
-      title={Training-free Zero-shot Composed Image Retrieval via Weighted Modality Fusion and Similarity}, 
-      author={Ren-Di Wu and Yu-Yen Lin and Huei-Fang Yang},
-      year={2024},
-      eprint={2409.04918},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2409.04918}, 
+@InProceedings{10.1007/978-981-96-4589-3_6,
+	author="Wu, Ren-Di
+	and Lin, Yu-Yen
+	and Yang, Huei-Fang",
+	editor="Chu, Wei-Ta and Shen, Chih-Ya and Shuai, Hong-Han",
+	title="Training-Free Zero-Shot Composed Image Retrieval via Weighted Modality Fusion and Similarity",
+	booktitle="Technologies and Applications of Artificial Intelligence",
+	year="2025",
+	publisher="Springer Nature Singapore",
+	address="Singapore",
+	pages="77--90",
+	abstract="Composed image retrieval (CIR), which formulates the query as a combination of a reference image and modified text, has emerged as a new form of image search due to its enhanced ability to capture user intent. However, training a CIR model in a supervised manner typically requires labor-intensive collection of (reference image, text modifier, target image) triplets. While existing zero-shot CIR (ZS-CIR) methods eliminate the need for training on specific downstream datasets, they still require additional pretraining on large-scale image datasets. In this paper, we introduce a training-free approach for ZS-CIR. Our approach, Weighted Modality fusion and similarity for CIR (WeiMoCIR), operates under the assumption that image and text modalities can be effectively combined using a simple weighted average. This allows the query representation to be constructed directly from the reference image and text modifier. To further enhance retrieval performance, we employ multimodal large language models (MLLMs) to generate image captions for the database images and incorporate these textual captions into the similarity computation by combining them with image information using a weighted average. Our approach is simple, easy to implement, and its effectiveness is validated through experiments on the FashionIQ and CIRR datasets. Code is available at https://github.com/whats2000/WeiMoCIR.",
+	isbn="978-981-96-4589-3"
 }
 ```
