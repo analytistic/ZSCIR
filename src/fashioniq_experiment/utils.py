@@ -8,7 +8,7 @@ from PIL import Image
 from matplotlib import pyplot as plt
 from matplotlib.gridspec import GridSpec
 import seaborn as sns
-
+from model.rqkmeans import RQKmeans
 
 def convert_to_pivot_fiq(data: List[pd.DataFrame]) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
@@ -252,6 +252,35 @@ def element_wise_sum(image_features: torch.Tensor, text_features: torch.Tensor, 
     """
     return F.normalize((1 - alpha) * image_features + alpha * text_features, dim=-1)
 
+def rq_wise_sum(
+    image_features: torch.Tensor,
+    text_features: torch.Tensor,
+    alpha: float,
+    rq: RQKmeans
+) -> torch.Tensor:
+    """
+    Normalized RQ-wise sum of image features and text features
+    :param image_features: non-normalized image features
+    :param text_features: non-normalized text features
+    :param alpha: weight for text features
+    :param rq: RQKmeans model
+    :return: normalized RQ-wise sum of image and text features
+    """
+    sid_image, img_res = rq(image_features)
+    sid_text, res_text = rq(text_features)
+    image_decoded = rq.decode(sid_image) # B, num_book, dim
+    text_decoded = rq.decode(sid_text) # B, num_book, dim
+    cosine_sim = F.cosine_similarity(image_decoded, text_decoded, dim=-1) # B, num_book
+    pos_idx = torch.where(cosine_sim >= 0, torch.ones_like(cosine_sim), torch.zeros_like(cosine_sim)) # B, num_book
+    neg_idx = torch.where(cosine_sim < 0, torch.ones_like(cosine_sim), torch.zeros_like(cosine_sim)) # B, num_book
+
+    
+    filtered_decoded = 0.6 * image_decoded * pos_idx.unsqueeze(-1) + 0.4 * text_decoded * pos_idx.unsqueeze(-1) + image_decoded * neg_idx.unsqueeze(-1) * (1 - alpha) + text_decoded * neg_idx.unsqueeze(-1) * alpha
+    res_decoded = img_res * (1-alpha) + res_text * alpha
+    filtered_decoded =  res_decoded + filtered_decoded.sum(dim=1) # B, dim
+
+    return F.normalize(filtered_decoded, dim=-1) # B, dim
+
 
 def get_combing_function_with_alpha(alpha: float):
     """
@@ -261,3 +290,13 @@ def get_combing_function_with_alpha(alpha: float):
     :return: combing function with a specific beta value
     """
     return lambda image_features, text_features: element_wise_sum(image_features, text_features, alpha=alpha)
+
+def get_combing_function_with_rq(alpha: float, rq: RQKmeans):
+    """
+    Get a combing function with a specific beta value.
+    """
+    return lambda image_features, text_features: rq_wise_sum(
+        image_features, text_features, alpha=alpha, rq=rq
+    )
+    
+

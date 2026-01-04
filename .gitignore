@@ -298,3 +298,20 @@ src/cirr_experiment/clip/*.csv
 src/cirr_experiment/blip/*.csv
 src/fashioniq_experiment/*.png
 src/cirr_experiment/*.png
+
+
+# 图片
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.svg
+
+# 压缩包
+*.zip
+
+# 模型权重
+*.pt
+*.pth

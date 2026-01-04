@@ -313,6 +313,8 @@ def collate_fn(batch: list):
     :return: output_batch = input_batch - None_values
     """
     batch = list(filter(lambda x: x is not None, batch))
+    if not batch:
+        return None
     return torch.utils.data.dataloader.default_collate(batch)
 
 
